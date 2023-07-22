@@ -1,0 +1,29 @@
+version: '3.7'
+
+services:
+  api:
+    build:
+      context: .
+      dockerfile: ./deploy/api/Dockerfile
+    restart: always
+    environment:
+      - UPLOAD_PATH=/code/uploads
+    ports:
+      - 8888:80
+    volumes:
+      - ./api:/code/api
+      - shared-volume:/code/uploads
+  
+  translator:
+    container_name: translator
+    build:
+      context: .
+      dockerfile: ./deploy/translator/Dockerfile
+    ports:
+      - 8889:80
+    volumes:
+      - ./translator:/code/translator
+
+
+volumes:
+  shared-volume:
