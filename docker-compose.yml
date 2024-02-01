@@ -5,24 +5,43 @@ services:
     build:
       context: .
       dockerfile: ./deploy/api/Dockerfile
-    restart: always
     environment:
-      - UPLOAD_PATH=/code/uploads
+      - UPLOAD_PATH=/app/uploads
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
     ports:
-      - 8888:80
+      - 8888:8080
     volumes:
-      - ./api:/code/api
-      - shared-volume:/code/uploads
+      - shared-volume:/app/uploads
+    depends_on:
+      - redis
+  
+  file-processor:
+    build:
+      context: .
+      dockerfile: ./deploy/file-processor/Dockerfile
+    command: celery -A main worker --loglevel=info -Q extract
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    volumes:
+      - shared-volume:/app/uploads
+    depends_on:
+      - redis
   
   translator:
-    container_name: translator
     build:
       context: .
       dockerfile: ./deploy/translator/Dockerfile
-    ports:
-      - 8889:80
-    volumes:
-      - ./translator:/code/translator
+    command: celery -A main worker --loglevel=info -Q translate
+    environment:
+      - CELERY_BROKER_URL=redis://redis:6379/0
+      - CELERY_RESULT_BACKEND=redis://redis:6379/0
+    depends_on:
+      - redis
+  
+  redis:
+    image: redis
 
 
 volumes:

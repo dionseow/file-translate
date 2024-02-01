@@ -1,0 +1,10 @@
+celery
+redis
+python-docx
+python-pptx
+PyMuPDF
+opencv-python-headless==4.6.0.66
+paddleocr==2.7.0.3
+paddlepaddle==2.5.2
+# spacy
+# https://github.com/explosion/spacy-models/releases/download/en_core_web_sm-3.7.1/en_core_web_sm-3.7.1.tar.gz

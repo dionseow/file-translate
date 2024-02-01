@@ -1,6 +1,6 @@
 from fastapi import FastAPI
 from app.core.settings import settings
-from app.routers.v1.file_translate import router as v1_router
+from app.routers.extract import router as extract_router
 from fastapi.staticfiles import StaticFiles
 
 
@@ -12,4 +12,4 @@ app = FastAPI(
 
 app.mount("/static", StaticFiles(directory="/app/app/static"), name="static")
 
-app.include_router(v1_router, prefix="/api/v1", tags=["v1"])
+app.include_router(extract_router, prefix="/api/v1", tags=["Extract Text"])
